@@ -1,0 +1,13 @@
+## Interface: 30000
+## Title: HarmonyArena
+## Notes: Arena unitframes
+## Author: Rishi
+## Version: r1
+## SavedVariables: HarmonyArenaDB
+
+embeds.xml
+HarmonyArena.lua
+frames.lua
+abilities.lua
+drtimer.lua
+options.lua

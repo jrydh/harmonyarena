@@ -1,0 +1,15 @@
+<Bindings>
+	<!-- direct targetting -->
+	<Binding name="CLICK HAFrame1:LeftButton" header="HARMONYARENA"></Binding>
+	<Binding name="CLICK HAFrame2:LeftButton"></Binding>
+	<Binding name="CLICK HAFrame3:LeftButton"></Binding>
+	<Binding name="CLICK HAFrame4:LeftButton"></Binding>
+	<Binding name="CLICK HAFrame5:LeftButton"></Binding>
+
+	<!-- focus targetting -->
+	<Binding name="CLICK HAFrame1:RightButton"></Binding>
+	<Binding name="CLICK HAFrame2:RightButton"></Binding>
+	<Binding name="CLICK HAFrame3:RightButton"></Binding>
+	<Binding name="CLICK HAFrame4:RightButton"></Binding>
+	<Binding name="CLICK HAFrame5:RightButton"></Binding>
+</Bindings>
