@@ -60,7 +60,6 @@ function HarmonyArena:InitFrames()
 		local f = CreateFrame( "Button", "HAFrame"..i, self.frame, "SecureUnitButtonTemplate" );
 		f.index = i;
 		
-		-- for testing...
 		f.unit = "arena"..i;
 		self.frames[f.unit] = f;
 		
@@ -100,9 +99,9 @@ function HarmonyArena:InitFrames()
 		f.spec.bg = f.spec:CreateTexture( nil, "BACKGROUND" );
 		f.spec.bg:SetAllPoints( f.spec );
 		f.spec.bg:SetTexture( 0, 0, 0 );
-		f.spec.text1 = f.spec:CreateFontString( nil, "OVERLAY", "GameFontNormalSmall" );
+		f.spec.text1 = f.spec:CreateFontString( nil, "OVERLAY", "GameFontHighlightSmall" );
 		f.spec.text1:SetPoint( "CENTER", f.spec, "CENTER", 0, 8 )
-		f.spec.text2 = f.spec:CreateFontString( nil, "OVERLAY", "GameFontNormalSmall" );
+		f.spec.text2 = f.spec:CreateFontString( nil, "OVERLAY", "GameFontHighlightSmall" );
 		f.spec.text2:SetPoint( "CENTER", f.spec, "CENTER", 0, -8 )
 		
 		f:SetScript( "OnShow",
@@ -134,16 +133,20 @@ local classIcons = {
 function HarmonyArena:InitUnitFrame( frame )
 	local unit = frame.unit;
 	if UnitExists( unit ) then
+		local guid = UnitGUID( unit );
+		self.unit[ guid ] = unit;
 		local _, class = UnitClass( unit );
 		local color = RAID_CLASS_COLORS[ class ];
 		frame.text:SetTextColor( color.r, color.g, color.b );
 		frame.health.bg:SetTexture( color.r, color.g, color.b );
 		frame.icon:SetTexture( classIcons[ class ] );
-		self:UpdateHealth( unit );
+		self:UNIT_HEALTH( nil, unit );
+		self.db.global.talents[ guid ] = self.db.global.talents[ guid ] or { 0, 0, 0 };
+		self:UpdateSpec( unit, guid );
 	end
 end
 
-function HarmonyArena:UpdateHealth( unit )
+function HarmonyArena:UNIT_HEALTH( event, unit )
 	local frame = self.frames[unit];
 	if frame then
 		local name = UnitName( unit );
