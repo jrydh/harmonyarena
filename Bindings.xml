@@ -1,15 +1,29 @@
 <Bindings>
-	<!-- direct targetting -->
+	<!-- target -->
 	<Binding name="CLICK HAFrame1:LeftButton" header="HARMONYARENA"></Binding>
 	<Binding name="CLICK HAFrame2:LeftButton"></Binding>
 	<Binding name="CLICK HAFrame3:LeftButton"></Binding>
 	<Binding name="CLICK HAFrame4:LeftButton"></Binding>
 	<Binding name="CLICK HAFrame5:LeftButton"></Binding>
 
-	<!-- focus targetting -->
+	<!-- focus -->
 	<Binding name="CLICK HAFrame1:RightButton"></Binding>
 	<Binding name="CLICK HAFrame2:RightButton"></Binding>
 	<Binding name="CLICK HAFrame3:RightButton"></Binding>
 	<Binding name="CLICK HAFrame4:RightButton"></Binding>
 	<Binding name="CLICK HAFrame5:RightButton"></Binding>
+
+	<!-- pet target -->
+	<Binding name="CLICK HAPetFrame1:LeftButton"></Binding>
+	<Binding name="CLICK HAPetFrame2:LeftButton"></Binding>
+	<Binding name="CLICK HAPetFrame3:LeftButton"></Binding>
+	<Binding name="CLICK HAPetFrame4:LeftButton"></Binding>
+	<Binding name="CLICK HAPetFrame5:LeftButton"></Binding>
+
+	<!-- pet focus -->
+	<Binding name="CLICK HAPetFrame1:RightButton"></Binding>
+	<Binding name="CLICK HAPetFrame2:RightButton"></Binding>
+	<Binding name="CLICK HAPetFrame3:RightButton"></Binding>
+	<Binding name="CLICK HAPetFrame4:RightButton"></Binding>
+	<Binding name="CLICK HAPetFrame5:RightButton"></Binding>
 </Bindings>

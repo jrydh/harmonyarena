@@ -9,5 +9,5 @@ embeds.xml
 HarmonyArena.lua
 frames.lua
 abilities.lua
-drtimer.lua
+auras.lua
 options.lua

@@ -48,16 +48,41 @@ end
 function HarmonyArena:Activate()
 	self:Print( "Activated" );
 	self:RegisterEvent("UNIT_HEALTH");
+	self:RegisterEvent("UNIT_AURA");
 	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
 	self.unit = {};
 	self.frame:Show();
+	for i = 1,5 do
+		self.frames["arena"..i].drbar.info = {};
+	end
 end
 
 function HarmonyArena:Deactivate()
 	self:Print( "Deactivated" );
 	self:UnregisterEvent("UNIT_HEALTH");
+	self:UnregisterEvent("UNIT_AURA");
 	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
 	self.frame:Hide();
+end
+
+function HarmonyArena:COMBAT_LOG_EVENT_UNFILTERED( e, ... )
+	local _, event, source, _, _, target, _, _, _, ability = select( 1, ... );
+	
+	if event:find( "SPELL_CAST" ) then
+		self:AbilityObserved( ability, source );
+	end
+	if event == "SPELL_AURA_APPLIED" or event == "SPELL_AURA_REFRESHED" then
+		self:AuraApplied( ability, source, target );
+	end
+	if ability == "PvP Trinket" or ability == "Every Man for Himself" then
+		self:PvPTrinketUsed( source );
+	end
+end
+
+function HarmonyArena:Debug( ... )
+	if self.debug then
+		self:Print( ... );
+	end
 end
 
 -- Key bindings
@@ -72,14 +97,13 @@ _G["BINDING_NAME_CLICK HAFrame2:RightButton"] = "Focus Opponent 2";
 _G["BINDING_NAME_CLICK HAFrame3:RightButton"] = "Focus Opponent 3";
 _G["BINDING_NAME_CLICK HAFrame4:RightButton"] = "Focus Opponent 4";
 _G["BINDING_NAME_CLICK HAFrame5:RightButton"] = "Focus Opponent 5";
---_G["BINDING_NAME_CLICK HAPetFrame1:LeftButton"] = "Target Pet 1";
---_G["BINDING_NAME_CLICK HAPetFrame2:LeftButton"] = "Target Pet 2";
---_G["BINDING_NAME_CLICK HAPetFrame3:LeftButton"] = "Target Pet 3";
---_G["BINDING_NAME_CLICK HAPetFrame4:LeftButton"] = "Target Pet 4";
---_G["BINDING_NAME_CLICK HAPetFrame5:LeftButton"] = "Target Pet 5";
---_G["BINDING_NAME_CLICK HAPetFrame1:RightButton"] = "Focus Pet 1";
---_G["BINDING_NAME_CLICK HAPetFrame2:RightButton"] = "Focus Pet 2";
---_G["BINDING_NAME_CLICK HAPetFrame3:RightButton"] = "Focus Pet 3";
---_G["BINDING_NAME_CLICK HAPetFrame4:RightButton"] = "Focus Pet 4";
---_G["BINDING_NAME_CLICK HAPetFrame5:RightButton"] = "Focus Pet 5";
---
+_G["BINDING_NAME_CLICK HAPetFrame1:LeftButton"] = "Target Pet 1";
+_G["BINDING_NAME_CLICK HAPetFrame2:LeftButton"] = "Target Pet 2";
+_G["BINDING_NAME_CLICK HAPetFrame3:LeftButton"] = "Target Pet 3";
+_G["BINDING_NAME_CLICK HAPetFrame4:LeftButton"] = "Target Pet 4";
+_G["BINDING_NAME_CLICK HAPetFrame5:LeftButton"] = "Target Pet 5";
+_G["BINDING_NAME_CLICK HAPetFrame1:RightButton"] = "Focus Pet 1";
+_G["BINDING_NAME_CLICK HAPetFrame2:RightButton"] = "Focus Pet 2";
+_G["BINDING_NAME_CLICK HAPetFrame3:RightButton"] = "Focus Pet 3";
+_G["BINDING_NAME_CLICK HAPetFrame4:RightButton"] = "Focus Pet 4";
+_G["BINDING_NAME_CLICK HAPetFrame5:RightButton"] = "Focus Pet 5";

@@ -16,11 +16,11 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
+local width = 132;
+local height = 32;
+
 function HarmonyArena:InitFrames()
 	if self.frame then return; end
-
-	local width = 132;
-	local height = 32;
 
 	-- main
 	local mf = CreateFrame( "Frame", "HarmonyArenaFrame", UIParent );
@@ -61,7 +61,7 @@ function HarmonyArena:InitFrames()
 		f.index = i;
 		
 		f.unit = "arena"..i;
-		self.frames[f.unit] = f;
+		self.frames[ f.unit ] = f;
 		
 		f:SetAttribute( "unit", f.unit );
 		f:SetAttribute( "type1", "target" );
@@ -85,27 +85,67 @@ function HarmonyArena:InitFrames()
 		f.text = f:CreateFontString( nil, "OVERLAY", "GameFontNormal" );
 		f.text:SetAllPoints( f.status );
 		
-		f.health = CreateFrame( "Frame", nil, f );
+		f.health = f:CreateTexture( nil, "ARTWORK" );
 		f.health:SetPoint( "TOPRIGHT", f, "TOPRIGHT", 0, -5 );
 		f.health:SetPoint( "BOTTOMRIGHT", f, "BOTTOMRIGHT", 0, 5 );
 		f.health:SetWidth(1);
-		f.health.bg = f.health:CreateTexture( nil, "ARTWORK" );
-		f.health.bg:SetAllPoints( f.health );
-		f.health.bg:SetTexture( 0.5, 0.5, 0.5 );
+		f.health:SetTexture( 0.5, 0.5, 0.5 );
 		
-		f.spec = CreateFrame( "Frame", nil, f );
-		f.spec:SetPoint( "TOPLEFT", f, "TOPRIGHT", 5, 0 );
-		f.spec:SetPoint( "BOTTOMRIGHT", f, "BOTTOMRIGHT", 5+1.5*height, 0 );
-		f.spec.bg = f.spec:CreateTexture( nil, "BACKGROUND" );
-		f.spec.bg:SetAllPoints( f.spec );
-		f.spec.bg:SetTexture( 0, 0, 0 );
-		f.spec.text1 = f.spec:CreateFontString( nil, "OVERLAY", "GameFontHighlightSmall" );
+		f.pet = CreateFrame( "Button", "HAPetFrame"..i, f, "SecureUnitButtonTemplate" );
+		f.pet.unit = f.unit.."pet";
+		self.frames[ f.pet.unit ] = f.pet;
+		f.pet:SetAttribute( "unit", f.pet.unit );
+		f.pet:SetAttribute( "type1", "target" );
+		f.pet:SetAttribute( "type2", "focus" );
+		f.pet:RegisterForClicks( "LeftButtonDown", "RightButtonDown" );
+		RegisterUnitWatch( f.pet );
+		f.pet:SetPoint( "TOPLEFT", f, "TOPRIGHT", 5, 0 );
+		f.pet:SetPoint( "BOTTOMRIGHT", f, "BOTTOMRIGHT", 5+1.5*height, 0 );
+		f.pet.text1 = f.pet:CreateFontString( nil, "BACKGROUND", "GameFontHighlightSmall" );
+		f.pet.text1:SetPoint( "CENTER", f.pet, "CENTER", 0, 8 );
+		f.pet.text1:SetText( "PET" );
+		f.pet.text2 = f.pet:CreateFontString( nil, "BACKGROUND", "GameFontHighlightSmall" );
+		f.pet.text2:SetPoint( "CENTER", f.pet, "CENTER", 0, -8 );
+		f.pet.text2:SetText( "100%" );
+		f.pet.bg = f.pet:CreateTexture( nil, "BACKGROUND" );
+		f.pet.bg:SetAllPoints( f.pet );
+		f.pet.bg:SetTexture( 0, 0, 0 );
+		
+		f.spec = f:CreateTexture( nil, "BACKGROUND" );
+		f.spec:SetPoint( "TOPLEFT", f.pet, "TOPRIGHT", 5, 0 );
+		f.spec:SetPoint( "BOTTOMRIGHT", f.pet, "BOTTOMRIGHT", 5+1.5*height, 0 );
+		f.spec:SetTexture( 0, 0, 0 );
+		f.spec.text1 = f:CreateFontString( nil, "OVERLAY", "GameFontHighlightSmall" );
 		f.spec.text1:SetPoint( "CENTER", f.spec, "CENTER", 0, 8 )
-		f.spec.text2 = f.spec:CreateFontString( nil, "OVERLAY", "GameFontHighlightSmall" );
+		f.spec.text2 = f:CreateFontString( nil, "OVERLAY", "GameFontHighlightSmall" );
 		f.spec.text2:SetPoint( "CENTER", f.spec, "CENTER", 0, -8 )
+		
+		f.pvp = f:CreateTexture( nil, "BACKGROUND" );
+		f.pvp:SetPoint( "TOPLEFT", f.spec, "TOPRIGHT", 5, 0 );
+		f.pvp:SetPoint( "BOTTOMRIGHT", f.spec, "BOTTOMRIGHT", 5+height, 0 );
+		f.pvp:SetTexture( "Interface\\Icons\\INV_Jewelry_Necklace_37" );
+		
+		f.aura = f:CreateTexture( nil, "BACKGROUND" );
+		f.aura:SetTexture( 0.5, 0.5, 0.5 );
+		f.aura:SetPoint( "TOPLEFT", f, "TOPLEFT", -height-10, 0 );
+		f.aura:SetPoint( "BOTTOMRIGHT", f, "BOTTOMLEFT", -10, 0 );
+		f.aura:Hide();
+		
+		f.auradur = f:CreateFontString( nil, "ARTWORK", "GameFontRedLarge" );
+		f.auradur:SetPoint( "CENTER", f.aura, "CENTER", 0, -8 );
+		f.auradur:Hide();
+		
+		f.drbar = f:CreateTexture( nil, "BACKGROUND" );
+		f.drbar:SetPoint( "TOPRIGHT", f, "TOPLEFT", -2, 0 );
+		f.drbar:SetPoint( "BOTTOMLEFT", f, "BOTTOMLEFT", -7, 0 );
+		f.drbar:SetTexture( 0.5, 0.5, 0.5 );
+		f.drbar:SetHeight( 0.5*height );
+		f.drbar:Hide();
 		
 		f:SetScript( "OnShow",
 			function( self ) HarmonyArena:InitUnitFrame( self ); end );
+		f:SetScript( "OnUpdate",
+			function( self ) HarmonyArena:UpdateUnitFrame( self ); end );
 	end
 end
 
@@ -138,7 +178,7 @@ function HarmonyArena:InitUnitFrame( frame )
 		local _, class = UnitClass( unit );
 		local color = RAID_CLASS_COLORS[ class ];
 		frame.text:SetTextColor( color.r, color.g, color.b );
-		frame.health.bg:SetTexture( color.r, color.g, color.b );
+		frame.health:SetTexture( color.r, color.g, color.b );
 		frame.icon:SetTexture( classIcons[ class ] );
 		self:UNIT_HEALTH( nil, unit );
 		self.db.global.talents[ guid ] = self.db.global.talents[ guid ] or { 0, 0, 0 };
@@ -146,22 +186,40 @@ function HarmonyArena:InitUnitFrame( frame )
 	end
 end
 
+function HarmonyArena:UpdateUnitFrame( frame )
+	self:UpdateAuraDuration( frame );
+	self:UpdateDR( frame );
+	self:UpdatePvPTrinket( frame );
+end
+
 function HarmonyArena:UNIT_HEALTH( event, unit )
 	local frame = self.frames[unit];
 	if frame then
-		local name = UnitName( unit );
 		local health = floor( 100 * UnitHealth( unit ) / UnitHealthMax( unit ) + 0.5 );
-		frame.text:SetText( health.."%" );
-		frame.health:SetWidth( max( 1, 100 - health ) );
-		local s = (health == 0) and "D E A D" or (name.." ("..health.."%)");
-		frame.text:SetText( s );
+		if UnitIsPlayer( unit ) then
+			local name = UnitName( unit );
+			frame.health:SetWidth( max( 1, 100 - health ) );
+			local s = (health == 0) and "D E A D" or (name.." ("..health.."%)");
+			frame.text:SetText( s );
+		else -- pet
+			local s = (health == 0) and "DEAD" or (health.."%");
+			frame.pet.text2:SetText( s );
+		end
 	end
 end
 
-function HarmonyArena:SetSpec( unit, desc, s1, s2, s3 )
-	local frame = self.frames[unit];
+function HarmonyArena:PvPTrinketUsed( guid )
+	local frame = self.frames[ guid ];
 	if frame then
-		frame.spec.text1:SetText( desc );
-		frame.spec.text2:SetText( string.format( "%d/%d/%d", s1, s2, s3 ) );
+		frame.pvp:Hide();
+		frame.pvp.time = GetTime() + 120.0;
+	end
+end
+
+function HarmonyArena:UpdatePvPTrinket( frame )
+	local time = frame.pvp.time;
+	if time and time > GetTime() then
+		frame.pvp.time = nil;
+		frame.pvp:Show();
 	end
 end

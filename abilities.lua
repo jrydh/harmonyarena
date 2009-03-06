@@ -187,7 +187,7 @@ local abilities = {
 	["Vigilance"]                = { 0, 0, 31 },
 	["Devastate"]                = { 0, 0, 41 },
 	["Shockwave"]                = { 0, 0, 51 },
-}
+};
 
 local talent_specs = {
 	["DEATHKNIGHT"] = {
@@ -196,9 +196,9 @@ local talent_specs = {
 		{ 0, 0, 31, "unholy" },
 	},
 	["DRUID"] = {
-		{ 0, 0, 21, "resto"},
 		{ 31, 0, 0, "bal"},
 		{ 0, 41, 0, "feral"},
+		{ 0, 0, 21, "resto"},
 		{ 0, 21, 21, "FC-resto" },
 	},
 	["HUNTER"] = {
@@ -217,9 +217,9 @@ local talent_specs = {
 		{ 0, 0, 41, "ret" },
 	},
 	["PRIEST"] = {
-		{ 0, 0, 21, "shadow" },
-		{ 0, 21, 0, "holy" },
 		{ 31, 0, 0, "disc" },
+		{ 0, 21, 0, "holy" },
+		{ 0, 0, 21, "shadow" },
 	},
 	["ROGUE"] = {
 		{ 41, 0, 0, "ass" },
@@ -232,50 +232,53 @@ local talent_specs = {
 		{ 0, 0, 21, "resto" },
 	},
 	["WARLOCK"] = {
-		{ 0, 0, 22, "destro" },
 		{ 41, 0, 0, "affl" },
 		{ 0, 41, 0, "demo" },
+		{ 0, 0, 22, "destro" },
 	},
 	["WARRIOR"] = {
 		{ 31, 0, 0, "arms" },
 		{ 0, 31, 0, "fury" },
 		{ 0, 0, 31, "prot" },
 	},
-}
+};
 
-function HarmonyArena:COMBAT_LOG_EVENT_UNFILTERED( event, ... )
-	local event, guid = select( 2, ... );
+function HarmonyArena:AbilityObserved( ability, guid )
 	local unit = self.unit[ guid ];
-	if unit then
-		local spellid, spellname = select( 9, ... );
-		if spellid and spellname and abilities[spellname] then
-			-- talents
-			local s1, s2, s3 = unpack( abilities[spellname] );
-			local t = self.db.global.talents[ guid ];
-			t[1] = max( t[1], s1 );
-			t[2] = max( t[2], s2 );
-			t[3] = max( t[3], s3 );
-			if( t[1] + t[2] + t[3] > 71 ) then
-				t[1], t[2], t[3] = s1, s2, s3;
-			end
-			
-			self:UpdateSpec( unit, guid );
-		end
+	if not unit or not abilities[ability] then return; end
+
+	local s1, s2, s3 = unpack( abilities[ability] );
+	self:Debug( string.format( "%s (%d/%d/%d) detected from %s",
+		ability, s1, s2, s3, UnitName( unit ) ) );
+	local t = self.db.global.talents[ guid ];
+	t[1] = max( t[1], s1 );
+	t[2] = max( t[2], s2 );
+	t[3] = max( t[3], s3 );
+	if( t[1] + t[2] + t[3] > 71 ) then
+		t[1], t[2], t[3] = s1, s2, s3;
 	end
+	
+	self:UpdateSpec( unit, guid );
 end
 
 function HarmonyArena:UpdateSpec( unit, guid )
 	local t = self.db.global.talents[ guid ];
-	if t then
+	local frame = self.frames[unit];
+	if t and frame then
 		local class = select( 2, UnitClass( unit ) );
 		local desc = "";
+		local score = -1;
 		for i,spec in ipairs( talent_specs[ class ] ) do
 			s1, s2, s3, d = unpack( spec );
 			if t[1] >= s1 and t[2] >= s2 and t[3] >= s3 then
-				desc = d;
+				if s1+s2+s3 > score then
+					score = s1+s2+s3;
+					desc = d;
+				end
 			end
 		end
 		
-		self:SetSpec( unit, desc, t[1], t[2], t[3] );
+		frame.spec.text1:SetText( desc );
+		frame.spec.text2:SetText( string.format( "%d/%d/%d", t[1], t[2], t[3] ) );
 	end
 end
