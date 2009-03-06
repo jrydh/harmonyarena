@@ -188,7 +188,7 @@ end
 
 function HarmonyArena:UpdateUnitFrame( frame )
 	self:UpdateAuraDuration( frame );
-	self:UpdateDR( frame );
+--	self:UpdateDR( frame );
 	self:UpdatePvPTrinket( frame );
 end
 
