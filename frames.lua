@@ -36,10 +36,10 @@ function HarmonyArena:InitFrames()
 	tf:SetPoint( "TOPLEFT", mf, "TOPLEFT", 0, 20 );
 	tf:SetPoint( "BOTTOMRIGHT", mf, "TOPRIGHT", 0, 0 );
 	tf:EnableMouse( true );
-	tf:RegisterForDrag( "LeftButton" );
+--	tf:RegisterForDrag( "LeftButton" );
+	tf:RegisterForClicks( "LeftButtonDown", "LeftButtonUp" );
 	tf:SetScript( "OnMouseDown", function() mf:StartMoving(); end );
 	tf:SetScript( "OnMouseUp", function() mf:StopMovingOrSizing(); self:SavePosition(); end );
-	tf:RegisterForClicks( "LeftButtonDown", "LeftButtonUp" );
 	
 	local title = tf:CreateFontString( nil, "ARTWORK", "GameFontHighlight" );
 	title:SetAllPoints( tf );
@@ -188,7 +188,7 @@ end
 
 function HarmonyArena:UpdateUnitFrame( frame )
 	self:UpdateAuraDuration( frame );
---	self:UpdateDR( frame );
+	self:UpdateDR( frame );
 	self:UpdatePvPTrinket( frame );
 end
 

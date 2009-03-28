@@ -125,7 +125,7 @@ local auras = {
 function HarmonyArena:UNIT_AURA( event, unit )
 	local frame = self.frames[ unit ];
 	if frame and UnitIsPlayer( unit ) then
-		local prio, icon, expTime = -1, "";
+		local prio, icon, expTime = -1, nil, nil;
 		for i = 1,40 do
 			local name, _, icon_, _, _, _, expTime_ = UnitBuff( unit, i );
 			if not name then break; end
@@ -218,6 +218,10 @@ function HarmonyArena:UpdateDR( frame )
 	local dr = frame.drbar.active;
 	if dr then
 		local info = frame.drbar.info[ dr ];
+		if not info or not info.n then
+			self:Debug( "Error: info nil in UpdateDR!" );
+			return;
+		end
 		n = ( info.n > 3 and 3 or info.n );
 		local dur = info.time - GetTime();
 		if n > 0 and dur > 0 then
