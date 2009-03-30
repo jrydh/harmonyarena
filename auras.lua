@@ -200,11 +200,23 @@ function HarmonyArena:AuraApplied( ability, source, target )
 			local info = frame.drbar.info;
 			info[ dr ] = info[ dr ] or { n = 0 };
 			info[ dr ].n = info[ dr ].n + 1;
-			info[ dr ].time = GetTime() + 15.0;
+			info[ dr ].time = 0;
 			if source == UnitGUID( "player" ) then
 				frame.drbar.active = dr;
-				self:Debug( string.format( "DR set to %d for %s", dr, unit ) );
 			end
+		end
+	end
+end
+
+function HarmonyArena:AuraRemoved( ability, target )
+	local unit = self.unit[ target ];
+	local frame = unit and self.frames[ unit ];
+
+	local aura = auras[ ability ];
+	if frame and aura then
+		local _, dr = unpack( aura );
+		if dr > 0 then
+			frame.drbar.info[ dr ].time = GetTime() + 15.0;
 		end
 	end
 end
@@ -218,21 +230,26 @@ function HarmonyArena:UpdateDR( frame )
 	local dr = frame.drbar.active;
 	if dr then
 		local info = frame.drbar.info[ dr ];
-		if not info or not info.n then
-			self:Debug( "Error: info nil in UpdateDR!" );
-			return;
-		end
 		n = ( info.n > 3 and 3 or info.n );
-		local dur = info.time - GetTime();
-		if n > 0 and dur > 0 then
+		if n > 0 then
 			local c = dr_colors[n];
 			frame.drbar:SetTexture( c[1], c[2], c[3] );
-			frame.drbar:SetHeight( floor( 0.5 + frame:GetHeight()*dur/15.0 ) );
-			frame.drbar:Show();
-		else
-			info = nil;
-			frame.drbar.active = nil;
-			frame.drbar:Hide();
+			local dur = info.time - GetTime();
+			if info.time == 0 then
+				-- aura is still active
+				frame.drbar:SetHeight( frame:GetHeight() );
+				frame.drbar:Show();
+			elseif dur > 0 then
+				-- aura has ended, start timer
+				local height = ceil( frame:GetHeight()*dur/15.0 );
+				frame.drbar:SetHeight( height );
+				frame.drbar:Show();
+			else
+				-- timer has ran out
+				frame.drbar.info = {};
+				frame.drbar.active = nil;
+				frame.drbar:Hide();
+			end
 		end
 	end
 end

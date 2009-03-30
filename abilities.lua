@@ -248,8 +248,6 @@ function HarmonyArena:AbilityObserved( ability, guid )
 	if not unit or not abilities[ability] then return; end
 
 	local s1, s2, s3 = unpack( abilities[ability] );
-	self:Debug( string.format( "%s (%d/%d/%d) detected from %s",
-		ability, s1, s2, s3, UnitName( unit ) ) );
 	local t = self.db.global.talents[ guid ];
 	t[1] = max( t[1], s1 );
 	t[2] = max( t[2], s2 );

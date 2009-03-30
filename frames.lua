@@ -50,7 +50,8 @@ function HarmonyArena:InitFrames()
 		local f = CreateFrame( "Button", "HAFrame"..i, self.frame, "SecureUnitButtonTemplate" );
 		f.index = i;
 		
-		f.unit = "arena"..i;
+		f.unit = ( i == 1 and "target" or "arena"..i );
+--		f.unit = "arena"..i;
 		self.frames[ f.unit ] = f;
 		
 		f:SetAttribute( "unit", f.unit );
@@ -81,29 +82,9 @@ function HarmonyArena:InitFrames()
 		f.health:SetWidth(1);
 		f.health:SetTexture( 0.5, 0.5, 0.5 );
 		
-		f.pet = CreateFrame( "Button", "HAPetFrame"..i, f, "SecureUnitButtonTemplate" );
-		f.pet.unit = f.unit.."pet";
-		self.frames[ f.pet.unit ] = f.pet;
-		f.pet:SetAttribute( "unit", f.pet.unit );
-		f.pet:SetAttribute( "type1", "target" );
-		f.pet:SetAttribute( "type2", "focus" );
-		f.pet:RegisterForClicks( "LeftButtonDown", "RightButtonDown" );
-		RegisterUnitWatch( f.pet );
-		f.pet:SetPoint( "TOPLEFT", f, "TOPRIGHT", 5, 0 );
-		f.pet:SetPoint( "BOTTOMRIGHT", f, "BOTTOMRIGHT", 5+1.5*height, 0 );
-		f.pet.text1 = f.pet:CreateFontString( nil, "BACKGROUND", "GameFontHighlightSmall" );
-		f.pet.text1:SetPoint( "CENTER", f.pet, "CENTER", 0, 8 );
-		f.pet.text1:SetText( "PET" );
-		f.pet.text2 = f.pet:CreateFontString( nil, "BACKGROUND", "GameFontHighlightSmall" );
-		f.pet.text2:SetPoint( "CENTER", f.pet, "CENTER", 0, -8 );
-		f.pet.text2:SetText( "100%" );
-		f.pet.bg = f.pet:CreateTexture( nil, "BACKGROUND" );
-		f.pet.bg:SetAllPoints( f.pet );
-		f.pet.bg:SetTexture( 0, 0, 0 );
-		
 		f.spec = f:CreateTexture( nil, "BACKGROUND" );
-		f.spec:SetPoint( "TOPLEFT", f.pet, "TOPRIGHT", 5, 0 );
-		f.spec:SetPoint( "BOTTOMRIGHT", f.pet, "BOTTOMRIGHT", 5+1.5*height, 0 );
+		f.spec:SetPoint( "TOPLEFT", f, "TOPRIGHT", 5, 0 );
+		f.spec:SetPoint( "BOTTOMRIGHT", f, "BOTTOMRIGHT", 5+1.5*height, 0 );
 		f.spec:SetTexture( 0, 0, 0 );
 		f.spec.text1 = f:CreateFontString( nil, "OVERLAY", "GameFontHighlightSmall" );
 		f.spec.text1:SetPoint( "CENTER", f.spec, "CENTER", 0, 8 )
@@ -126,7 +107,7 @@ function HarmonyArena:InitFrames()
 		f.auradur:Hide();
 		
 		f.drbar = f:CreateTexture( nil, "BACKGROUND" );
-		f.drbar:SetPoint( "TOPRIGHT", f, "TOPLEFT", -2, 0 );
+		f.drbar:SetPoint( "BOTTOMRIGHT", f, "BOTTOMLEFT", -2, 0 );
 		f.drbar:SetPoint( "BOTTOMLEFT", f, "BOTTOMLEFT", -7, 0 );
 		f.drbar:SetTexture( 0.5, 0.5, 0.5 );
 		f.drbar:SetHeight( 0.5*height );
@@ -178,29 +159,25 @@ function HarmonyArena:UNIT_HEALTH( event, unit )
 	local frame = self.frames[unit];
 	if frame then
 		local health = floor( 100 * UnitHealth( unit ) / UnitHealthMax( unit ) + 0.5 );
-		if UnitIsPlayer( unit ) then
-			local name = UnitName( unit );
-			frame.health:SetWidth( max( 1, 100 - health ) );
-			local s = (health == 0) and "D E A D" or (name.." ("..health.."%)");
-			frame.text:SetText( s );
-		else -- pet
-			local s = (health == 0) and "DEAD" or (health.."%");
-			frame.pet.text2:SetText( s );
-		end
+		local name = UnitName( unit );
+		frame.health:SetWidth( max( 1, 100 - health ) );
+		local s = (health == 0) and "D E A D" or (name.." ("..health.."%)");
+		frame.text:SetText( s );
 	end
 end
 
 function HarmonyArena:PvPTrinketUsed( guid )
-	local frame = self.frames[ guid ];
+	local unit = self.unit[ guid ];
+	local frame = unit and self.frames[ unit ];
 	if frame then
-		frame.pvp:Hide();
 		frame.pvp.time = GetTime() + 120.0;
+		frame.pvp:Hide();
 	end
 end
 
 function HarmonyArena:UpdatePvPTrinket( frame )
 	local time = frame.pvp.time;
-	if time and time > GetTime() then
+	if time and time < GetTime() then
 		frame.pvp.time = nil;
 		frame.pvp:Show();
 	end

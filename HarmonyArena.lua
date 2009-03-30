@@ -46,14 +46,15 @@ function HarmonyArena:ZONE_CHANGED_NEW_AREA()
 end
 
 function HarmonyArena:Activate()
+	if InCombatLockdown() then return; end
 	self:Print( "Activated" );
 	self:RegisterEvent("UNIT_HEALTH");
 	self:RegisterEvent("UNIT_AURA");
 	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
 	self.unit = {};
 	self.frame:Show();
-	for i = 1,5 do
-		self.frames["arena"..i].drbar.info = {};
+	for unit,frame in pairs( self.frames ) do
+		frame.drbar.info = {};
 	end
 end
 
@@ -73,8 +74,10 @@ function HarmonyArena:COMBAT_LOG_EVENT_UNFILTERED( e, ... )
 	end
 	if event == "SPELL_AURA_APPLIED" or event == "SPELL_AURA_REFRESHED" then
 		self:AuraApplied( ability, source, target );
-	end
-	if ability == "PvP Trinket" or ability == "Every Man for Himself" then
+	elseif event == "SPELL_AURA_REMOVED" then
+		self:AuraRemoved( ability, target );
+	elseif event == "SPELL_CAST_SUCCESS" and ( ability == "PvP Trinket"
+	                              or ability == "Every Man for Himself" ) then
 		self:PvPTrinketUsed( source );
 	end
 end
@@ -97,13 +100,3 @@ _G["BINDING_NAME_CLICK HAFrame2:RightButton"] = "Focus Opponent 2";
 _G["BINDING_NAME_CLICK HAFrame3:RightButton"] = "Focus Opponent 3";
 _G["BINDING_NAME_CLICK HAFrame4:RightButton"] = "Focus Opponent 4";
 _G["BINDING_NAME_CLICK HAFrame5:RightButton"] = "Focus Opponent 5";
-_G["BINDING_NAME_CLICK HAPetFrame1:LeftButton"] = "Target Pet 1";
-_G["BINDING_NAME_CLICK HAPetFrame2:LeftButton"] = "Target Pet 2";
-_G["BINDING_NAME_CLICK HAPetFrame3:LeftButton"] = "Target Pet 3";
-_G["BINDING_NAME_CLICK HAPetFrame4:LeftButton"] = "Target Pet 4";
-_G["BINDING_NAME_CLICK HAPetFrame5:LeftButton"] = "Target Pet 5";
-_G["BINDING_NAME_CLICK HAPetFrame1:RightButton"] = "Focus Pet 1";
-_G["BINDING_NAME_CLICK HAPetFrame2:RightButton"] = "Focus Pet 2";
-_G["BINDING_NAME_CLICK HAPetFrame3:RightButton"] = "Focus Pet 3";
-_G["BINDING_NAME_CLICK HAPetFrame4:RightButton"] = "Focus Pet 4";
-_G["BINDING_NAME_CLICK HAPetFrame5:RightButton"] = "Focus Pet 5";
