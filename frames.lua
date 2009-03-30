@@ -50,8 +50,7 @@ function HarmonyArena:InitFrames()
 		local f = CreateFrame( "Button", "HAFrame"..i, self.frame, "SecureUnitButtonTemplate" );
 		f.index = i;
 		
-		f.unit = ( i == 1 and "target" or "arena"..i );
---		f.unit = "arena"..i;
+		f.unit = "arena"..i;
 		self.frames[ f.unit ] = f;
 		
 		f:SetAttribute( "unit", f.unit );
