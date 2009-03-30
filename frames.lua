@@ -30,6 +30,7 @@ function HarmonyArena:InitFrames()
 	mf:SetHeight( height * 5 );
 	mf:SetMovable( true );
 	mf:Hide();
+	if not mf:GetLeft() then mf:SetPoint( "CENTER" ); end
 	
 	-- title
 	local tf = CreateFrame( "Button", nil, mf );
