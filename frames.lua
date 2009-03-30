@@ -36,23 +36,12 @@ function HarmonyArena:InitFrames()
 	tf:SetPoint( "TOPLEFT", mf, "TOPLEFT", 0, 20 );
 	tf:SetPoint( "BOTTOMRIGHT", mf, "TOPRIGHT", 0, 0 );
 	tf:EnableMouse( true );
---	tf:RegisterForDrag( "LeftButton" );
-	tf:RegisterForClicks( "LeftButtonDown", "LeftButtonUp" );
 	tf:SetScript( "OnMouseDown", function() mf:StartMoving(); end );
-	tf:SetScript( "OnMouseUp", function() mf:StopMovingOrSizing(); self:SavePosition(); end );
+	tf:SetScript( "OnMouseUp", function() mf:StopMovingOrSizing(); end );
 	
 	local title = tf:CreateFontString( nil, "ARTWORK", "GameFontHighlight" );
 	title:SetAllPoints( tf );
 	title:SetText( "Harmony Arena" );
-	
-	if not self.db.profile.position then
-		self.db.profile.position = {};
-		mf:SetPoint( "CENTER", UIParent );
-		self:SavePosition();
-	else
-		local pos = self.db.profile.position;
-		mf:SetPoint( pos.point, UIParent, pos.relPoint, pos.x, pos.y );
-	end
 	
 	-- unit frames
 	self.frames = {};
@@ -147,14 +136,6 @@ function HarmonyArena:InitFrames()
 		f:SetScript( "OnUpdate",
 			function( self ) HarmonyArena:UpdateUnitFrame( self ); end );
 	end
-end
-
-function HarmonyArena:SavePosition()
-	local point, _, relPoint, x, y = self.frame:GetPoint();
-	self.db.profile.position.point = point;
-	self.db.profile.position.relPoint = relPoint;
-	self.db.profile.position.x = math.floor(x);
-	self.db.profile.position.y = math.floor(y);
 end
 
 local classIcons = {
