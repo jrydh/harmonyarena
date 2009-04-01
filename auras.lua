@@ -112,6 +112,7 @@ local auras = {
 	-- pseudoimmunities
 	["Cheating Death"]         = { 50, 0 },
 	["Cloak of Shadows"]       = { 50, 0 },
+	["Deterrence"]             = { 50, 0 },
 	["Evasion"]                = { 50, 0 },
 	["The Beast Within"]       = { 50, 0 },
 	["Divine Protection"]      = { 50, 0 },
@@ -198,7 +199,26 @@ function HarmonyArena:AuraApplied( ability, source, target )
 		local _, dr = unpack( aura );
 		if dr > 0 then
 			local info = frame.drbar.info;
-			info[ dr ] = info[ dr ] or { n = 0 };
+			info[ dr ] = info[ dr ] or { n = 0, m = 0 };
+			info[ dr ].n = info[ dr ].n + 1;	-- number of applications
+			info[ dr ].m = info[ dr ].m + 1;	-- number of unique auras
+			info[ dr ].time = 0;
+			if source == UnitGUID( "player" ) then
+				frame.drbar.active = dr;
+			end
+		end
+	end
+end
+
+function HarmonyArena:AuraRefreshed( ability, source, target )
+	local unit = self.unit[ target ];
+	local frame = unit and self.frames[ unit ];
+
+	local aura = auras[ ability ];
+	if frame and aura then
+		local _, dr = unpack( aura );
+		if dr > 0 then
+			local info = frame.drbar.info;
 			info[ dr ].n = info[ dr ].n + 1;
 			info[ dr ].time = 0;
 			if source == UnitGUID( "player" ) then
@@ -216,7 +236,11 @@ function HarmonyArena:AuraRemoved( ability, target )
 	if frame and aura then
 		local _, dr = unpack( aura );
 		if dr > 0 then
-			frame.drbar.info[ dr ].time = GetTime() + 15.0;
+			local info = frame.drbar.info;
+			info[ dr ].m = info[ dr ].m - 1;
+			if info[ dr ].m == 0 then
+				info[ dr ].time = GetTime() + 15.0;
+			end
 		end
 	end
 end
@@ -234,21 +258,22 @@ function HarmonyArena:UpdateDR( frame )
 		if n > 0 then
 			local c = dr_colors[n];
 			frame.drbar:SetTexture( c[1], c[2], c[3] );
-			local dur = info.time - GetTime();
 			if info.time == 0 then
 				-- aura is still active
 				frame.drbar:SetHeight( frame:GetHeight() );
 				frame.drbar:Show();
-			elseif dur > 0 then
-				-- aura has ended, start timer
-				local height = ceil( frame:GetHeight()*dur/15.0 );
-				frame.drbar:SetHeight( height );
-				frame.drbar:Show();
 			else
-				-- timer has ran out
-				frame.drbar.info = {};
-				frame.drbar.active = nil;
-				frame.drbar:Hide();
+				local dur = info.time - GetTime();
+				if dur > 0 then
+					-- aura has ended, start timer
+					local height = ceil( frame:GetHeight()*dur/15.0 );
+					frame.drbar:SetHeight( height );
+				else
+					-- timer has ran out
+					frame.drbar.info[dr] = nil;
+					frame.drbar.active = nil;
+					frame.drbar:Hide();
+				end
 			end
 		end
 	end

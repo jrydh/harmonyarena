@@ -59,6 +59,7 @@ function HarmonyArena:Activate()
 end
 
 function HarmonyArena:Deactivate()
+	if InCombatLockdown() then return; end
 	self:Print( "Deactivated" );
 	self:UnregisterEvent("UNIT_HEALTH");
 	self:UnregisterEvent("UNIT_AURA");
@@ -72,8 +73,10 @@ function HarmonyArena:COMBAT_LOG_EVENT_UNFILTERED( e, ... )
 	if event:find( "SPELL_CAST" ) then
 		self:AbilityObserved( ability, source );
 	end
-	if event == "SPELL_AURA_APPLIED" or event == "SPELL_AURA_REFRESHED" then
+	if event == "SPELL_AURA_APPLIED" then
 		self:AuraApplied( ability, source, target );
+	elseif event == "SPELL_AURA_REFRESH" then
+		self:AuraRefreshed( ability, source, target );
 	elseif event == "SPELL_AURA_REMOVED" then
 		self:AuraRemoved( ability, target );
 	elseif event == "SPELL_CAST_SUCCESS" and ( ability == "PvP Trinket"
