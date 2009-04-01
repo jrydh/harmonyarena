@@ -90,10 +90,10 @@ function HarmonyArena:InitFrames()
 		f.spec.text2 = f:CreateFontString( nil, "OVERLAY", "GameFontHighlightSmall" );
 		f.spec.text2:SetPoint( "CENTER", f.spec, "CENTER", 0, -8 )
 		
-		f.pvp = f:CreateTexture( nil, "BACKGROUND" );
-		f.pvp:SetPoint( "TOPLEFT", f.spec, "TOPRIGHT", 5, 0 );
-		f.pvp:SetPoint( "BOTTOMRIGHT", f.spec, "BOTTOMRIGHT", 5+height, 0 );
-		f.pvp:SetTexture( "Interface\\Icons\\INV_Jewelry_Necklace_37" );
+		f.trinket = f:CreateTexture( nil, "BACKGROUND" );
+		f.trinket:SetPoint( "TOPLEFT", f.spec, "TOPRIGHT", 5, 0 );
+		f.trinket:SetPoint( "BOTTOMRIGHT", f.spec, "BOTTOMRIGHT", 5+height, 0 );
+		f.trinket:SetTexture( "Interface\\Icons\\INV_Jewelry_Necklace_37" );
 		
 		f.aura = f:CreateTexture( nil, "BACKGROUND" );
 		f.aura:SetTexture( 0.5, 0.5, 0.5 );
@@ -169,15 +169,15 @@ function HarmonyArena:PvPTrinketUsed( guid )
 	local unit = self.unit[ guid ];
 	local frame = unit and self.frames[ unit ];
 	if frame then
-		frame.pvp.time = GetTime() + 120.0;
-		frame.pvp:Hide();
+		frame.trinket.time = GetTime() + 120.0;
+		frame.trinket:Hide();
 	end
 end
 
 function HarmonyArena:UpdatePvPTrinket( frame )
-	local time = frame.pvp.time;
+	local time = frame.trinket.time;
 	if time and time < GetTime() then
-		frame.pvp.time = nil;
-		frame.pvp:Show();
+		frame.trinket.time = nil;
+		frame.trinket:Show();
 	end
 end
