@@ -2,7 +2,7 @@
 ## Title: HarmonyArena
 ## Notes: Arena unitframes
 ## Author: Rishi
-## Version: r1
+## Version: r2
 ## SavedVariables: HarmonyArenaDB
 
 embeds.xml
