@@ -55,6 +55,7 @@ function HarmonyArena:Activate()
 	self.frame:Show();
 	for unit,frame in pairs( self.frames ) do
 		frame.drbar.info = {};
+		frame.drbar.active = nil;
 	end
 end
 
@@ -68,7 +69,7 @@ function HarmonyArena:Deactivate()
 end
 
 function HarmonyArena:COMBAT_LOG_EVENT_UNFILTERED( e, ... )
-	local _, event, source, _, _, target, _, _, _, ability = select( 1, ... );
+	local _, event, source, _, _, target, _, _, _, ability = ...;
 	
 	if event:find( "SPELL_CAST" ) then
 		self:AbilityObserved( ability, source );
@@ -79,8 +80,9 @@ function HarmonyArena:COMBAT_LOG_EVENT_UNFILTERED( e, ... )
 		self:AuraRefreshed( ability, source, target );
 	elseif event == "SPELL_AURA_REMOVED" then
 		self:AuraRemoved( ability, target );
-	elseif event == "SPELL_CAST_SUCCESS" and ( ability == "PvP Trinket"
-	                              or ability == "Every Man for Himself" ) then
+	elseif event == "SPELL_CAST_SUCCESS"
+			and ( ability == "PvP Trinket" or
+			      ability == "Every Man for Himself" ) then
 		self:PvPTrinketUsed( source );
 	end
 end
