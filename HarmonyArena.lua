@@ -66,6 +66,9 @@ function HarmonyArena:Deactivate()
 	self:UnregisterEvent("UNIT_AURA");
 	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
 	self.frame:Hide();
+	for unit,frame in pairs( self.frames ) do
+		frame.drbar:Hide();
+	end
 end
 
 function HarmonyArena:COMBAT_LOG_EVENT_UNFILTERED( e, ... )
