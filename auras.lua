@@ -111,6 +111,7 @@ local auras = {
 	["Feign Death"]            = { 30, 0 },
 	
 	-- pseudoimmunities
+	["Anti-Magic Shell"]       = { 50, 0 },
 	["Cheating Death"]         = { 50, 0 },
 	["Cloak of Shadows"]       = { 50, 0 },
 	["Deterrence"]             = { 50, 0 },
