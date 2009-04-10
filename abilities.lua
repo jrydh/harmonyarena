@@ -96,7 +96,7 @@ local abilities = {
 	["Avenger's Shield"]         = { 0, 41, 0 },
 	["Hammer of the Righteous"]  = { 0, 51, 0 },
 	["Seal of Command"]          = { 0, 0, 11 },
-	["Repentence"]               = { 0, 0, 31 },
+	["Repentance"]               = { 0, 0, 31 },
 	["Crusader Strike"]          = { 0, 0, 41 },
 	["Divine Storm"]             = { 0, 0, 51 },
 	

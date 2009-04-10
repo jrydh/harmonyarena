@@ -30,6 +30,7 @@ local auras = {
 	["Heroism"]                = { 10, 0 },
 	["Innervate"]              = { 10, 0 },
 	["Pain Suppression"]       = { 10, 0 },
+	["Lichborne"]              = { 10, 0 },
 	["Refreshment"]            = { 100, 0 }, -- mage food
 	["Drink"]                  = { 100, 0 }, -- arena water
 	
