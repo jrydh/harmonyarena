@@ -23,10 +23,11 @@ local auras = {
 	["Adrenaline Rush"]        = { 1, 0 },
 	["Berserk"]                = { 1, 0 },
 	["Berserker Rage"]         = { 1, 0 },
-	["Blessing of Freedom"]    = { 1, 0 },
 	["Bloodlust"]              = { 10, 0 },
 	["Divine Plea"]            = { 10, 0 },
 	["Fel Domination"]         = { 100, 0 },
+	["Hand of Freedom"]        = { 1, 0 },
+	["Hand of Sacrifice"]      = { 1, 0 },
 	["Heroism"]                = { 10, 0 },
 	["Innervate"]              = { 10, 0 },
 	["Pain Suppression"]       = { 10, 0 },
@@ -112,13 +113,15 @@ local auras = {
 	
 	-- pseudoimmunities
 	["Anti-Magic Shell"]       = { 50, 0 },
+	["Aura Mastery"]           = { 50, 0 },
+	["Bladestorm"]             = { 50, 0 },
 	["Cheating Death"]         = { 50, 0 },
 	["Cloak of Shadows"]       = { 50, 0 },
 	["Deterrence"]             = { 50, 0 },
 	["Evasion"]                = { 50, 0 },
 	["The Beast Within"]       = { 50, 0 },
 	["Divine Protection"]      = { 50, 0 },
-	["Hand of Protection"]     = { 100, 0 },
+	["Hand of Protection"]     = { 50, 0 },
 	
 	-- immunities
 	["Divine Shield"]          = { 200, 0 },
