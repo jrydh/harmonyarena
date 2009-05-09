@@ -77,8 +77,7 @@ local auras = {
 	["Repentance"]             = { 20, 6 },
 	["Sap"]                    = { 20, 6 },
 	
-	-- blind/cylone
-	["Blind"]                  = { 20, 7 },
+	-- cylone
 	["Cyclone"]                = { 20, 7 },
 	
 	-- sleep
@@ -86,6 +85,7 @@ local auras = {
 	["Wyvern Sting"]           = { 20, 8 },
 
 	-- fear
+	["Blind"]                  = { 20, 9 },
 	["Fear"]                   = { 20, 9 },
 	["Howl of Terror"]         = { 20, 9 },
 	["Intimidating Shout"]     = { 20, 9 },
