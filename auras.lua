@@ -21,7 +21,7 @@ local auras = {
 
 	-- buffs
 	["Adrenaline Rush"]        = { 1, 0 },
-	["Berserk"]                = { 1, 0 },
+	["Berserk"]                = { 15, 0 },
 	["Berserker Rage"]         = { 1, 0 },
 	["Bloodlust"]              = { 10, 0 },
 	["Divine Plea"]            = { 10, 0 },
