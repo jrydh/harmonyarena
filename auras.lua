@@ -21,8 +21,6 @@ local auras = {
 
 	-- buffs
 	["Adrenaline Rush"]        = { 1, 0 },
-	["Berserk"]                = { 15, 0 },
-	["Berserker Rage"]         = { 1, 0 },
 	["Bloodlust"]              = { 10, 0 },
 	["Divine Plea"]            = { 10, 0 },
 	["Fel Domination"]         = { 100, 0 },
@@ -31,7 +29,6 @@ local auras = {
 	["Heroism"]                = { 10, 0 },
 	["Innervate"]              = { 10, 0 },
 	["Pain Suppression"]       = { 10, 0 },
-	["Lichborne"]              = { 10, 0 },
 	["Refreshment"]            = { 100, 0 }, -- mage food
 	["Drink"]                  = { 100, 0 }, -- arena water
 	
@@ -70,10 +67,10 @@ local auras = {
 	["Pounce"]                 = { 20, 5 },
 	
 	-- gouge/polymorph/sap
-	["Hungering Cold"]         = { 20, 6 },
-	["Polymorph"]              = { 20, 6 },
 	["Gouge"]                  = { 20, 6 },
 	["Hex"]                    = { 20, 6 },
+	["Hungering Cold"]         = { 20, 6 },
+	["Polymorph"]              = { 20, 6 },
 	["Repentance"]             = { 20, 6 },
 	["Sap"]                    = { 20, 6 },
 	
@@ -114,11 +111,14 @@ local auras = {
 	-- pseudoimmunities
 	["Anti-Magic Shell"]       = { 50, 0 },
 	["Aura Mastery"]           = { 50, 0 },
+	["Berserk"]                = { 50, 0 },
+	["Berserker Rage"]         = { 50, 0 },
 	["Bladestorm"]             = { 50, 0 },
 	["Cheating Death"]         = { 50, 0 },
 	["Cloak of Shadows"]       = { 50, 0 },
 	["Deterrence"]             = { 50, 0 },
 	["Evasion"]                = { 50, 0 },
+	["Lichborne"]              = { 50, 0 },
 	["The Beast Within"]       = { 50, 0 },
 	["Divine Protection"]      = { 50, 0 },
 	["Hand of Protection"]     = { 50, 0 },
@@ -203,14 +203,11 @@ function HarmonyArena:AuraApplied( ability, source, target )
 	if frame and aura then
 		local _, dr = unpack( aura );
 		if dr > 0 then
-			local info = frame.drbar.info;
+			local info = frame.drinfo;
 			info[ dr ] = info[ dr ] or { n = 0, m = 0 };
 			info[ dr ].n = info[ dr ].n + 1;	-- number of applications
 			info[ dr ].m = info[ dr ].m + 1;	-- number of unique auras
 			info[ dr ].time = 0;
-			if source == UnitGUID( "player" ) then
-				frame.drbar.active = dr;
-			end
 		end
 	end
 end
@@ -223,12 +220,9 @@ function HarmonyArena:AuraRefreshed( ability, source, target )
 	if frame and aura then
 		local _, dr = unpack( aura );
 		if dr > 0 then
-			local info = frame.drbar.info;
+			local info = frame.drinfo;
 			info[ dr ].n = info[ dr ].n + 1;
 			info[ dr ].time = 0;
-			if source == UnitGUID( "player" ) then
-				frame.drbar.active = dr;
-			end
 		end
 	end
 end
@@ -241,7 +235,7 @@ function HarmonyArena:AuraRemoved( ability, target )
 	if frame and aura then
 		local _, dr = unpack( aura );
 		if dr > 0 then
-			local info = frame.drbar.info;
+			local info = frame.drinfo;
 			info[ dr ].m = info[ dr ].m - 1;
 			if info[ dr ].m == 0 then
 				info[ dr ].time = GetTime() + 15.0;
@@ -256,30 +250,32 @@ local dr_colors = {
 	{ 0.7, 0, 0 }
 };
 function HarmonyArena:UpdateDR( frame )
-	local dr = frame.drbar.active;
-	if dr then
-		local info = frame.drbar.info[ dr ];
+	local function UpdateDRBar( drbar, dr )
+		local info = frame.drinfo[ dr ];
+		if not info or dr == 0 then return; end
 		n = ( info.n > 3 and 3 or info.n );
 		if n > 0 then
 			local c = dr_colors[n];
-			frame.drbar:SetTexture( c[1], c[2], c[3] );
+			drbar:SetTexture( c[1], c[2], c[3] );
 			if info.time == 0 then
 				-- aura is still active
-				frame.drbar:SetHeight( frame:GetHeight() );
-				frame.drbar:Show();
+				drbar:SetHeight( frame:GetHeight() );
+				drbar:Show();
 			else
 				local dur = info.time - GetTime();
 				if dur > 0 then
 					-- aura has ended, start timer
 					local height = ceil( frame:GetHeight()*dur/15.0 );
-					frame.drbar:SetHeight( height );
+					drbar:SetHeight( height );
 				else
 					-- timer has ran out
-					frame.drbar.info[dr] = nil;
-					frame.drbar.active = nil;
-					frame.drbar:Hide();
+					frame.drinfo[dr] = nil;
+					drbar:Hide();
 				end
 			end
 		end
 	end
+	
+	UpdateDRBar( frame.drbar1, self.db.global.dr1 );
+	UpdateDRBar( frame.drbar2, self.db.global.dr2 );
 end

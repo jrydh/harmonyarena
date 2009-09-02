@@ -1,8 +1,8 @@
-## Interface: 30100
+## Interface: 30200
 ## Title: HarmonyArena
 ## Notes: Arena unitframes
 ## Author: Rishi
-## Version: r2
+## Version: r3
 ## SavedVariables: HarmonyArenaDB
 
 embeds.xml

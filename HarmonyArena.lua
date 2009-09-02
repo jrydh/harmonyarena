@@ -20,9 +20,10 @@ HarmonyArena = LibStub("AceAddon-3.0"):NewAddon("HarmonyArena",
 	"AceConsole-3.0", "AceEvent-3.0");
 
 function HarmonyArena:OnInitialize()
-	local defaults = { global = { talents = {} } };
+	local defaults = { global = { talents = {}, dr1 = 0, dr2 = 0 } };
 	self.db = LibStub("AceDB-3.0"):New( "HarmonyArenaDB", defaults );
 	self:InitFrames();
+	self:SetupOptions();
 end
 
 function HarmonyArena:OnEnable()
@@ -54,8 +55,7 @@ function HarmonyArena:Activate()
 	self.unit = {};
 	self.frame:Show();
 	for unit,frame in pairs( self.frames ) do
-		frame.drbar.info = {};
-		frame.drbar.active = nil;
+		frame.drinfo = {};
 	end
 end
 
@@ -67,7 +67,8 @@ function HarmonyArena:Deactivate()
 	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
 	self.frame:Hide();
 	for unit,frame in pairs( self.frames ) do
-		frame.drbar:Hide();
+		frame.drbar1:Hide();
+		frame.drbar2:Hide();
 	end
 end
 

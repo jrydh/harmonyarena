@@ -97,20 +97,27 @@ function HarmonyArena:InitFrames()
 		
 		f.aura = f:CreateTexture( nil, "BACKGROUND" );
 		f.aura:SetTexture( 0.5, 0.5, 0.5 );
-		f.aura:SetPoint( "TOPLEFT", f, "TOPLEFT", -height-10, 0 );
-		f.aura:SetPoint( "BOTTOMRIGHT", f, "BOTTOMLEFT", -10, 0 );
+		f.aura:SetPoint( "TOPLEFT", f, "TOPLEFT", -height-16, 0 );
+		f.aura:SetPoint( "BOTTOMRIGHT", f, "BOTTOMLEFT", -16, 0 );
 		f.aura:Hide();
 		
 		f.auradur = f:CreateFontString( nil, "ARTWORK", "GameFontRedLarge" );
 		f.auradur:SetPoint( "CENTER", f.aura, "CENTER", 0, -8 );
 		f.auradur:Hide();
 		
-		f.drbar = f:CreateTexture( nil, "BACKGROUND" );
-		f.drbar:SetPoint( "BOTTOMRIGHT", f, "BOTTOMLEFT", -2, 0 );
-		f.drbar:SetPoint( "BOTTOMLEFT", f, "BOTTOMLEFT", -7, 0 );
-		f.drbar:SetTexture( 0.5, 0.5, 0.5 );
-		f.drbar:SetHeight( 0.5*height );
-		f.drbar:Hide();
+		f.drbar1 = f:CreateTexture( nil, "BACKGROUND" );
+		f.drbar1:SetPoint( "BOTTOMRIGHT", f, "BOTTOMLEFT", -2, 0 );
+		f.drbar1:SetPoint( "BOTTOMLEFT", f, "BOTTOMLEFT", -7, 0 );
+		f.drbar1:SetTexture( 0.5, 0.5, 0.5 );
+		f.drbar1:SetHeight( 0.5*height );
+		f.drbar1:Hide();
+
+		f.drbar2 = f:CreateTexture( nil, "BACKGROUND" );
+		f.drbar2:SetPoint( "BOTTOMRIGHT", f, "BOTTOMLEFT", -9, 0 );
+		f.drbar2:SetPoint( "BOTTOMLEFT", f, "BOTTOMLEFT", -14, 0 );
+		f.drbar2:SetTexture( 0.5, 0.5, 0.5 );
+		f.drbar2:SetHeight( 0.5*height );
+		f.drbar2:Hide();
 		
 		f:SetScript( "OnShow",
 			function( self ) HarmonyArena:InitUnitFrame( self ); end );
