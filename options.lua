@@ -60,13 +60,10 @@ function HarmonyArena:SetupOptions( defaults )
 		s:SetText( "DR timer "..i.." category" );
 		s:SetPoint( "TOPLEFT", f, "TOPLEFT", xd, yd );
 		
-		local d = CreateFrame( "Button", "HarmonyArenaDRDropdown"..i, f, "UIDropDownMenuTemplate" );
+		local d = CreateFrame( "Button", "HarmonyArenaDRDropDown"..i, f, "UIDropDownMenuTemplate" );
 		d:SetWidth( 128 );
 		d:SetHeight( 16 );
 		UIDropDownMenu_Initialize( d, HarmonyArena_InitializeDRDropDown );
-		d:SetScript( "OnClick", function( self )
-			ToggleDropDownMenu( 1, nil, self, self, 0, 0 );
-		end );
 		d:SetPoint( "LEFT", s, "LEFT", 125, 0 );
 		
 		return d;
